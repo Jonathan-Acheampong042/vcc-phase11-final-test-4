@@ -1,0 +1,22 @@
+name: Create PR
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        required: true
+      title:
+        required: true
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}
+      - env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          curl -s -X POST -H "Authorization: token $GH_TOKEN" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/${{ github.repository }}/pulls \
+          -d "{\"title\":\"${{ github.event.inputs.title }}\",\"head\":\"${{ github.event.inputs.branch }}\",\"base\":\"main\"}"

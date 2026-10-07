@@ -1,0 +1,24 @@
+name: CI
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - name: Run test
+        run: |
+          if [ -f "FAIL_CI" ]; then
+            echo "CI deliberately failed."
+            exit 1
+          elif [ -f "PENDING_CI" ]; then
+            echo "CI pending..."
+            sleep 300
+          else
+            echo "CI passed!"
+            exit 0
+          fi
